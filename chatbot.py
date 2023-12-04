@@ -38,11 +38,41 @@ os.environ["OPENAI_API_KEY"] = openai_api_key
 # temperature는 0에 가까워질수록 형식적인 답변을 내뱉고, 1에 가까워질수록 창의적인 답변을 내뱉음
 llm = ChatOpenAI(temperature=0.2)
 
-# 어떤 파일을 학습시키는지에 따라 위 내용을 참고하며 코드를 바꿔주세요. ex) pdf, html, csv
+# 어떤 파일을 학습시키는지에 따라 코드를 바꿔주세요. ex) pdf, html, csv
+
+# 첫번째 구현 방법: 웹사이트 url 학습시키기
+# ---------------------------------------------------
 from langchain.document_loaders import WebBaseLoader
 
 loader = WebBaseLoader("https://dalpha.so/ko/howtouse?scrollTo=custom")
 data = loader.load()
+# ---------------------------------------------------
+
+
+# 두번째 구현 방법: pdf 학습시키기
+# 먼저 VSCode에서 만든 이 폴더 내에 pdf 파일을 업로드 해주셔야해요!
+# 사용하고 싶으면 아래 부분의 코드 주석을 없애주세요
+# ---------------------------------------------------
+# from langchain.document_loaders import PyPDFLoader
+
+# loader = PyPDFLoader("파일이름.pdf")
+# pages = loader.load_and_split()
+
+# data = []
+# for content in pages:
+#     data.append(content)
+# ---------------------------------------------------
+
+
+# 세번째 구현 방법: csv 학습시키기
+# 먼저 VSCode에서 만든 이 폴더 내에 csv 파일을 업로드 해주셔야해요!
+# 사용하고 싶으면 아래 부분의 코드 주석을 없애주세요
+# ---------------------------------------------------
+# from langchain.document_loaders.csv_loader import CSVLoader
+
+# loader = CSVLoader(file_path='파일이름.csv')
+# data = loader.load()
+# ---------------------------------------------------
 
 # 올린 파일 내용 쪼개기
 text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000, chunk_overlap = 0)
