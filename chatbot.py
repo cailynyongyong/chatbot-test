@@ -1,6 +1,11 @@
+# 여기서부터 세줄은 로컬환경에서 돌릴 때에는(즉 웹사이트로 배포 안하고 그냥 터미널에서 돌릴때) 주석처리 해주셔야합니다. 
+# 배포할때에는 주석처리하시면 안됩니다. 
+# 주석처리 방법은 "Ctrl + "/"" 누르기
+# ---------------------------------------------------
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# ---------------------------------------------------
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
@@ -10,9 +15,15 @@ import streamlit as st
 import time
 import os
 
-# 여기서 자신의 OpenAI api key로 바꿔주세요
+# 첫번째 구현 방법: 자신의 OpenAI API key로 돌려도 된다면 
+# 여기서 자신의 OpenAI api key를 넣고 주석을 없애주세요
+# ---------------------------------------------------
 # os.environ["OPENAI_API_KEY"] ="내 api key"
+# ---------------------------------------------------
 
+
+# 두번째 구현 방법: 사용자의 api key 받아서 돌리기
+# ---------------------------------------------------
 openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 
 if not openai_api_key:
@@ -21,6 +32,7 @@ if not openai_api_key:
 
 import os
 os.environ["OPENAI_API_KEY"] = openai_api_key
+# ---------------------------------------------------
 
 
 # temperature는 0에 가까워질수록 형식적인 답변을 내뱉고, 1에 가까워질수록 창의적인 답변을 내뱉음
