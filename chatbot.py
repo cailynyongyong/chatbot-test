@@ -11,7 +11,7 @@ import time
 import os
 
 # 여기서 자신의 OpenAI api key로 바꿔주세요
-os.environ["OPENAI_API_KEY"] ="내 api key"
+# os.environ["OPENAI_API_KEY"] ="내 api key"
 
 openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 
