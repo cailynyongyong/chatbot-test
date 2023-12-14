@@ -21,6 +21,7 @@ import os
 # os.environ["OPENAI_API_KEY"] ="내 api key"
 # ---------------------------------------------------
 
+# os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 # 두번째 구현 방법: 사용자의 api key 받아서 돌리기
 # ---------------------------------------------------
