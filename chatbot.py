@@ -29,7 +29,7 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 #로컬 환경에서 내 api key로 돌릴때 
 # ---------------------------------------------------
-os.environ["OPENAI_API_KEY"] ="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"
+os.environ["OPENAI_API_KEY"] =""
 # ---------------------------------------------------
 
 #첫번째 구현 방법: Streamlit 배포할때 OpenAI API key로 돌려도 된다면 다음 코드로 배포하기
