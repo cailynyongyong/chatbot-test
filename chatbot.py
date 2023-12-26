@@ -2,9 +2,9 @@
 # 배포할때에는 주석처리하시면 안됩니다. 
 # 주석처리 방법은 "Ctrl + "/"" 누르기
 # ---------------------------------------------------
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # ---------------------------------------------------
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -15,9 +15,21 @@ import streamlit as st
 import time
 import os
 
+from langchain.chains import LLMChain
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
+from langchain.utilities.dalle_image_generator import DallEAPIWrapper
+
+llm = OpenAI(temperature=0.9)
+prompt = PromptTemplate(
+    input_variables=["image_desc"],
+    template="Generate a detailed prompt to generate an image based on the following description: {image_desc}",
+)
+chain = LLMChain(llm=llm, prompt=prompt)
+
 #로컬 환경에서 내 api key로 돌릴때 
 # ---------------------------------------------------
-# os.environ["OPENAI_API_KEY"] ="내 api key"
+os.environ["OPENAI_API_KEY"] ="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"
 # ---------------------------------------------------
 
 #첫번째 구현 방법: Streamlit 배포할때 OpenAI API key로 돌려도 된다면 다음 코드로 배포하기
@@ -28,19 +40,19 @@ import os
 
 # 두번째 구현 방법: 사용자의 api key 받아서 돌리기
 # ---------------------------------------------------
-openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+# openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 
-if not openai_api_key:
-    st.info("OpenAI API를 먼저 입력해주세요.")
-    st.stop()
+# if not openai_api_key:
+#     st.info("OpenAI API를 먼저 입력해주세요.")
+#     st.stop()
 
-import os
-os.environ["OPENAI_API_KEY"] = openai_api_key
+# import os
+# os.environ["OPENAI_API_KEY"] = openai_api_key
 # ---------------------------------------------------
 
 
 # temperature는 0에 가까워질수록 형식적인 답변을 내뱉고, 1에 가까워질수록 창의적인 답변을 내뱉음
-llm = ChatOpenAI(temperature=0.2)
+llm = ChatOpenAI(temperature=0.2, model="gpt-3.5-turbo-1106")
 
 # 어떤 파일을 학습시키는지에 따라 코드를 바꿔주세요. ex) pdf, html, csv
 
@@ -48,7 +60,7 @@ llm = ChatOpenAI(temperature=0.2)
 # ---------------------------------------------------
 from langchain.document_loaders import WebBaseLoader
 
-loader = WebBaseLoader("https://dalpha.so/ko/howtouse?scrollTo=custom")
+loader = WebBaseLoader("https://sosoeasyword.com/27/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9&bmode=view&idx=17122350&t=board")
 data = loader.load()
 # ---------------------------------------------------
 
@@ -146,8 +158,8 @@ agent_executor = AgentExecutor(
 # 웹사이트 제목
 st.title("AI 상담원")
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
+# if "openai_model" not in st.session_state:
+#     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -175,4 +187,7 @@ if prompt := st.chat_input("Dalpha AI store는 어떻게 사용하나요?"):
             time.sleep(0.1)
             message_placeholder.markdown(full_response + "▌")
         message_placeholder.markdown(full_response)
+        image_url = DallEAPIWrapper().run(chain.run(prompt))
+        st.image(image_url)
+
     st.session_state.messages.append({"role": "assistant", "content": full_response})

@@ -70,25 +70,32 @@ class PrintRetrievalHandler(BaseCallbackHandler):
 
 # 첫번째 구현 방법: 웹사이트 url 학습시키기
 # ---------------------------------------------------
-from langchain.document_loaders import WebBaseLoader
+# from langchain.document_loaders import WebBaseLoader
 
-loader = WebBaseLoader("https://dalpha.so/ko/howtouse?scrollTo=custom")
-data = loader.load()
+# loader = WebBaseLoader("https://dalpha.so/ko/howtouse?scrollTo=custom")
+# data = loader.load()
 # ---------------------------------------------------
 
 
-# 두번째 구현 방법: pdf 학습시키기
+# 두번째 구현 방법: 여러 pdf 학습시키기
 # 먼저 VSCode에서 만든 이 폴더 내에 pdf 파일을 업로드 해주셔야해요!
 # 사용하고 싶으면 아래 부분의 코드 주석을 없애주세요
 # ---------------------------------------------------
-# from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders.csv_loader import CSVLoader
 
-# loader = PyPDFLoader("파일이름.pdf")
-# pages = loader.load_and_split()
 
-# data = []
-# for content in pages:
-#     data.append(content)
+loaders = [
+    PyPDFLoader("체크리스트.pdf"), 
+    CSVLoader(file_path='좋은답변예시.csv')
+]
+data = []
+
+for loader in loaders: 
+    pages = loader.load_and_split()
+    for content in pages: 
+        data.append(content)
+
 # ---------------------------------------------------
 
 
@@ -98,7 +105,12 @@ data = loader.load()
 # ---------------------------------------------------
 # from langchain.document_loaders.csv_loader import CSVLoader
 
-# loader = CSVLoader(file_path='파일이름.csv')
+# loader = CSVLoader(file_path='좋은예시.csv')
+# pages = loader.load_and_split()
+# for content in pages: 
+#     data.append(content)
+
+# print(data)
 # data = loader.load()
 # ---------------------------------------------------
 
@@ -118,7 +130,7 @@ memory = ConversationBufferMemory(memory_key="chat_history", chat_memory=msgs, r
 
 # Setup LLM and QA chain
 llm = ChatOpenAI(
-    model_name="gpt-3.5-turbo", temperature=0, streaming=True
+    model_name="gpt-4", temperature=0, streaming=True
 )
 qa_chain = ConversationalRetrievalChain.from_llm(
     llm, retriever=retriever, memory=memory, verbose=True
